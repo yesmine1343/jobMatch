@@ -1,5 +1,3 @@
-// This router config for SPA routes and Laravel's monolithic SPA setup.
-
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/home.vue';
 import Login from '../views/auth/Login.vue';
@@ -12,9 +10,9 @@ const routes = [
         component: Home,
     },
     {
-        path: '/login',            // user sees /login
-        name: 'login',             // for navigation and redirection in code ex:router.push({name:'ForgotPassword'})
-        component: Login,           // what Vue renders
+        path: '/login',
+        name: 'login',
+        component: Login
     },
     {
         path:'/forgot-password',
@@ -24,8 +22,14 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHistory('/app/'),
     routes,
 });
+
+router.beforeEach(async (to, from, next) => {
+    console.log(`Navigating to: ${to.name}`);
+    next();
+});
+
 
 export default router;
