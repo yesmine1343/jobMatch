@@ -17,3 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+/*
+This automatically creates:
+- GET /api/jobs → index()
+- POST /api/jobs → store()
+- GET /api/jobs/{id} → show()
+- PUT/PATCH /api/jobs/{id} → update()
+- DELETE /api/jobs/{id} → destroy()
+*/ 

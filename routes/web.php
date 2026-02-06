@@ -14,5 +14,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/app/');
+});
+
+Route::get('/app/{any?}', function () {
+
+    return view('app');
 })->where('any', '.*');
+
+/* 
+Catches any URL under /app
+Prevents 404 when user refreshes or pastes a URL
+Hands control back to Vue Router
+*/
+
+Route::apiResource('jobs', JobController::class);

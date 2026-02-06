@@ -9,5 +9,5 @@
   </template>
   
   <script setup>
-  // Simple, no logic for now.
+  // Simple, no logic for now. Tailwind CSS is loaded globally via app.css.
   </script>

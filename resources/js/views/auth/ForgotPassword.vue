@@ -1,22 +1,27 @@
 <template>
-    <div class="login-container container-sm card p-4 shadow">
-      <form action="/someRoute" novalidate>
-        <div class="container-fluid"> 
-          <div class="form-group row mb-6">
-            <div class="col mb-3"> 
-              <label for="email">Email address:</label>
-              <input type="email" class="form-control md-6" id="email">
-            </div>
-          </div>
-          <div class="row mb-3"> 
-            <div class="col md-6">
-              <button type="submit" class="btn btn-primary">Next</button>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
-  </template>
+  <div class="min-h-screen mt-1 flex justify-start pl-24 ">
+    <form @submit.prevent="handleSubmit" novalidate class=" mt-12 h-1/5 bg-indigo-300 w-1/3 rounded-xl shadow-2xl border-2 border-slate-200 max-w-md p-8 space-y-5">
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+        <input
+          type="email"
+          id="email"
+          v-model="form.username"
+          class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+        />
+      </div>
+
+      <div>
+        <button
+          type="submit"
+          class="w-full rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          Next
+        </button>
+      </div>
+    </form>
+  </div>
+</template>
   
   <script setup>
   import { ref } from 'vue';
@@ -43,7 +48,7 @@
   
   <style scoped>
   .login-container {
-    display: flex;
+
     justify-content: left;
     align-items: center;
     min-height: 60vh;
@@ -52,65 +57,5 @@
     margin-left: 12%;
     margin-top: 4%;
   }
-  .login-form {
-    border: 3px solid #03085c;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 8px;
-    max-width: 400px;
-    width: 100%;
-  }
-  
-  .container {
-    padding: 16px;
-  }
-  
-  
-  button {
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: 500;
-    transition: opacity 0.3s;
-  }
-  
-  button:hover {
-    opacity: 0.8;
-  }
-  
-  .cancelbtn {
-    width: auto;
-    padding: 10px 18px;
-    background-color: #f44336;
-  }
-  
-  .footer-container {
-    background-color: #f1f1f1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  /* Change styles for span and cancel button on extra small screens */
-  @media screen and (max-width: 300px) {
-    span.psw {
-      display: block;
-      float: none;
-    }
-  
-    .cancelbtn {
-      width: 100%;
-    }
-  
-    .footer-container {
-      flex-direction: column;
-      gap: 10px;
-    }
-  }
   </style>
-  
   
