@@ -16,15 +16,15 @@
       <router-view />
     </main>
   </div>
-  </template>
-  
-  <script setup>
-  // No logic yet – just the main layout shell.
-  </script>
-  
-  <style scoped>
-  /* You can put global-like styles here or rely on Tailwind if enabled */
-  .app-container {
+</template>
+
+<script setup>
+// No logic yet – just the main layout shell.
+</script>
+
+<style scoped>
+/* You can put global-like styles here or rely on Tailwind if enabled */
+.app-container {
   min-height: 100vh;
   background-image: url('/images/bgimg.png');
   background-size: cover;
@@ -92,4 +92,4 @@
   z-index: 10;
   padding: 2rem;
 }
-  </style>
+</style>
