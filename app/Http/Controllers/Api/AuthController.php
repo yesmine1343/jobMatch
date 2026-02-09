@@ -14,25 +14,36 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        //validation
-        $validatedForm= $request->validate([
+        // Validation
+        $validatedForm = $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:8',
             'username' => 'nullable|string'
         ]);
-        //find user
-        $user = User::where('email', $validated['email'])->first();
-        //exists and correct pwd - success msg; exists and incorrect pwd - forgotpwd redirect ; sign up redirect; incorrect pwd - false credentials msg
-        if(Auth::attempt($validatedForm)){                     //idk 
-            $request->session()->regenerate();
-        } else {
+
+        // Find user by email
+        $user = User::where('email', $validatedForm['email'])->first();
+
+        // Check if user exists
+        if (!$user) {
             return response()->json([
-                'message' => 'User does not exist. Please sign up.'
+                'error_type' => 'account_not_found',
+                'message' => 'This account does not exist.'
             ], 401);
         }
-        //authenticated token
+
+        // Check if password is correct
+        if (!Hash::check($validatedForm['password'], $user->password)) {
+            return response()->json([
+                'error_type' => 'invalid_credentials',
+                'message' => 'Invalid credentials.'
+            ], 401);
+        }
+
+        // Generate authentication token
         $token = $user->createToken('auth-token')->plainTextToken;
-        //success response with token
+
+        // Success response with token
         return response()->json([
             'message' => 'Login successful',
             'user' => $user,
@@ -57,7 +68,7 @@ class AuthController extends Controller
     public function Register(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => [
                 'required',
@@ -69,8 +80,9 @@ class AuthController extends Controller
                     ->symbols(),       
             ],
         ]);
+
         $user = User::create([
-            'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
@@ -84,5 +96,19 @@ class AuthController extends Controller
             'user' => $user,
             'token' => $token,
         ],201);
+    }
+
+    public function checkUsername(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string|max:255'
+        ]);
+
+        $exists = User::where('username', $request->username)->exists();
+
+        return response()->json([
+            'available' => !$exists,
+            'message' => $exists ? 'Username is already taken' : 'Username is available'
+        ]);
     }
 }

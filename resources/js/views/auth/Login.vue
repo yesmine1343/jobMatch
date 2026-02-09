@@ -16,6 +16,15 @@
       <div class="space-y-2">
         <label for="pwd" class="block text-sm font-semibold text-slate-700">Password:</label>
         <input type="password" id="pwd" v-model.lazy="form.password" class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 bg-slate-50 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
+        
+        <!-- Error messages -->
+        <p v-if="errorType === 'invalid_credentials'" class="mt-1 text-xs text-indigo-900">
+          Invalid credentials
+        </p>
+        <p v-if="errorType === 'account_not_found'" class="mt-1 text-xs text-indigo-900">
+          This account does not exist, do you want to 
+          <a href="" @click.prevent="$router.push({ name: 'register' })" class="text-blue-600 hover:underline">sign up?</a>
+        </p>
       </div>
 
       <!-- Remember me -->
@@ -55,19 +64,32 @@ const form = ref({
   remember: false,
 });
 
+const errorType = ref('');
+
 // handler sends a POST request to the login/auth HTTP endpoint.
 const handleSubmit = async () => {
+  // Clear previous error
+  errorType.value = '';
+  
   try {
-    console.log('submit fired',form.value);
     // Send a POST request to your Laravel API endpoint
     const response = await axiosInstance.post('/api/auth/login', form.value);
     
-    console.log('Login successful:', response.data);
-    // TODO: Handle successful login (e.g., store token, redirect)
+    // Store the authentication token
+    if (response.data.token) {
+      localStorage.setItem('token', response.data.token);
+    }
+    
+    // Redirect to home
+    router.push({ name: 'home' });
     
   } catch (error) {
     console.error('Login error:', error.response?.data || error.message);
-    // TODO: Display error message to user
+    
+    // Set error type based on backend response
+    if (error.response?.data?.error_type) {
+      errorType.value = error.response.data.error_type;
+    }
   }
 };
 
@@ -75,3 +97,4 @@ const handleCancel = () => {
   router.push({ name: 'home' });
 };
 </script>
+
