@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules\Password;          //pwd requirements
 /* 
 POST /api/auth/logout → AuthController@logout (needs auth middleware)
@@ -81,6 +82,19 @@ class AuthController extends Controller
             ],
         ]);
 
+        // Server-side ZeroBounce Validation
+        $emailCheck = $this->validateEmailWithZeroBounce($request->email);
+
+        // Check if email is valid. 
+        if ($emailCheck['status'] !== 'valid') {
+            return response()->json([
+                'message' => 'Invalid or non-deliverable email address.',
+                'errors' => [
+                    'email' => ['The email address is not valid (Status: ' . ($emailCheck['status'] ?? 'unknown') . ').']
+                ]
+            ], 422);
+        }
+
         $user = User::create([
             'username' => $request->username,
             'email' => $request->email,
@@ -95,7 +109,7 @@ class AuthController extends Controller
             'message' => 'User registered successfully',
             'user' => $user,
             'token' => $token,
-        ],201);
+        ], 201);
     }
 
     public function checkUsername(Request $request)
@@ -111,34 +125,45 @@ class AuthController extends Controller
             'message' => $exists ? 'Username is already taken' : 'Username is available'
         ]);
     }
+
     public function handleEmail(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
         ]);
 
-        $email = $request->email;
-        $apiKey = config('services.openai.key');
+        $data = $this->validateEmailWithZeroBounce($request->email);
 
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $apiKey,
-            'Content-Type'  => 'application/json',
-        ])->post('https://api.openai.com/v1/chat/completions', [
-            'model' => 'gpt-4o-mini',
-            'messages' => [
-                [
-                    'role' => 'system',
-                    'content' => 'You are a helpful assistant.',
-                ],
-                [
-                    'role' => 'user',
-                    'content' => "User submitted this email: {$email}. Respond politely.",
-                ],
-            ],
-        ]);
+        $isValid = isset($data['status']) && $data['status'] === 'valid';
+        $message = $isValid ? 'Email is valid' : 'Email is invalid or risky';
+        
+        if (!$isValid && isset($data['status'])) {
+             $message = "Email status: " . $data['status'];
+        }
 
         return response()->json([
-            'message' => $response->json('choices.0.message.content'),
+            'valid' => $isValid,
+            'message' => $message,
+            'data' => $data 
         ]);
+    }
+
+    /**
+     * Helper to call ZeroBounce API
+     */
+    private function validateEmailWithZeroBounce($email)
+    {
+        $apiKey = config('services.zerobounce.key');
+        // ZeroBounce API endpoint
+        $url = "https://api.zerobounce.net/v2/validate?api_key={$apiKey}&email={$email}&ip_address=";
+
+        try {
+            $response = Http::get($url);
+            return $response->json();
+        } catch (\Exception $e) {
+            // Fallback or error handling
+            \Log::error("ZeroBounce Error: " . $e->getMessage());
+            return ['status' => 'unknown', 'error' => $e->getMessage()];
+        }
     }
 }
