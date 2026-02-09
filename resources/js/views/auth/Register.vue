@@ -72,7 +72,6 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import axiosInstance from '../../api/axios';
-import { computed } from 'vue';
 
 const form = ref({
   name: '',
@@ -123,9 +122,15 @@ const handleSubmit = async () => {
     // Send a POST request to your Laravel API endpoint
     const response = await axiosInstance.post('/api/auth/register', form.value);
     
+    console.log('Full response:', response.data);
+    console.log('Token received:', response.data.token);
+    
     // Store the authentication token (if returned)
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
+      console.log('Token stored:', localStorage.getItem('token'));
+    } else {
+      console.warn('No token in response!');
     }
     
     // Show success message from backend

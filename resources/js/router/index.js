@@ -21,8 +21,8 @@ const routes = [
         component: Register
     },
     {
-        path:'/forgot-password',
-        name:'ForgotPassword',
+        path: '/forgot-password',
+        name: 'ForgotPassword',
         component: ForgotPassword,
     }
 ];
@@ -40,8 +40,30 @@ Route::get('/app/{any?}', function () {
 
 */
 
-router.beforeEach(async (to, from, next) => {
-    console.log(`Navigating to: ${to.name}`);
+router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem('token');
+    const authPages = ['login', 'register', 'ForgotPassword'];
+    const isAuthPage = authPages.includes(to.name);
+
+    // If user has token and tries to access login/register, ask if they want to switch accounts
+    if (token && isAuthPage) {
+        const wantToSwitch = confirm('You are already logged in. Do you want to log in with another account?');
+
+        if (wantToSwitch) {
+            // Clear current token and proceed to auth page
+            localStorage.removeItem('token');
+            return next();
+        } else {
+            // Stay logged in, redirect to home
+            return next({ name: 'home' });
+        }
+    }
+
+    // If user doesn't have token and tries to access protected page, redirect to login
+    if (!token && !isAuthPage) {
+        return next({ name: 'login' });
+    }
+
     next();
 });
 
