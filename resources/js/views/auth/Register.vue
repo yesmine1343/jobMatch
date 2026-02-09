@@ -12,16 +12,45 @@
         <input id="email" name="email" type="email" autocomplete="off" required placeholder="you@example.com" v-model.trim="form.email" class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 bg-slate-50 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
       </div>
 
-      <!-- Password -->
       <div class="space-y-2">
         <label for="password" class="block text-sm font-semibold text-slate-700">Password:</label>
         <input id="password" name="password" type="password" autocomplete="new-password" required v-model="form.password" class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 bg-slate-50 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
+        <p v-if="form.password && missingRequirements.length > 0" class="mt-1 text-xs text-indigo-900">
+          please change your password to fit our security requirements
+        </p>
+      </div>
+      <div class="space-y-2">
+        <p class="text-sm text-slate-700 mt-2 leading-relaxed">
+          Your password must:
+        </p>
+      <ul class="text-sm text-slate-700 ml-4 space-y-1">
+        <li>
+          • At least 8 characters
+          <span v-if="passwordRules.minLength" class="text-green-600">✓</span>
+        </li>
+        <li>
+          • Contain one uppercase letter
+          <span v-if="passwordRules.hasUpper" class="text-green-600">✓</span>
+        </li>
+        <li>
+          • Contain one number
+          <span v-if="passwordRules.hasNumber" class="text-green-600">✓</span>
+        </li>
+        <li>
+          • Contain one special character
+          <span v-if="passwordRules.hasSymbol" class="text-green-600">✓</span>
+        </li>
+      </ul>
       </div>
 
       <!-- Confirm Password -->
       <div class="space-y-2">
         <label for="password_confirmation" class="block text-sm font-semibold text-slate-700">Confirm password:</label>
         <input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" required v-model="form.password_confirmation" class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 bg-slate-50 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
+       
+        <p v-if="form.password_confirmation && !passwordsMatch" class="mt-1 text-xs text-indigo-900">
+          Passwords do not match
+        </p>
       </div>
 
       <!-- Submit -->
@@ -40,7 +69,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import axiosInstance from '../../api/axios';
+import { computed } from 'vue';
 
 const form = ref({
   name: '',
@@ -48,6 +80,33 @@ const form = ref({
   password: '',
   password_confirmation: '',
 });
+
+const passwordRules = computed(() => {
+  const p = form.value.password
+
+  return {
+    minLength: p.length >= 8,
+    hasUpper: /[A-Z]/.test(p),
+    hasNumber: /\d/.test(p),
+    hasSymbol: /[^A-Za-z0-9]/.test(p),
+  }
+})
+
+const missingRequirements = computed(() => {
+  const missing = []
+  const rules = passwordRules.value
+
+  if (!rules.minLength) missing.push('Password must be at least 8 characters')
+  if (!rules.hasUpper) missing.push('Password must contain one uppercase letter')
+  if (!rules.hasNumber) missing.push('Password must contain one number')
+  if (!rules.hasSymbol) missing.push('Password must contain one special character')
+
+  return missing
+})
+
+const passwordsMatch = computed(() => {
+  return form.value.password === form.value.password_confirmation
+})
 
 // Reset form to ensure clean state on component mount
 onMounted(() => {
@@ -62,14 +121,25 @@ onMounted(() => {
 const handleSubmit = async () => {
   try {
     // Send a POST request to your Laravel API endpoint
-    const response = await window.axios.post('/api/auth/register', form.value);
+    const response = await axiosInstance.post('/api/auth/register', form.value);
     
-    console.log('Registration successful:', response.data);
-    // TODO: Handle successful registration (e.g., redirect to login)
+    // Store the authentication token (if returned)
+    if (response.data.token) {
+      localStorage.setItem('token', response.data.token);
+    }
+    
+    // Show success message from backend
+    alert(response.data.message);
+    
+    // Redirect to home
+    router.push({ name: 'home' });
     
   } catch (error) {
     console.error('Registration error:', error.response?.data || error.message);
-    // TODO: Display error message to user
+    // Display validation errors from backend
+    if (error.response?.data?.message) {
+      alert(error.response.data.message);
+    }
   }
 };
 </script>

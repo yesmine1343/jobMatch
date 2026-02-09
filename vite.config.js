@@ -12,4 +12,11 @@ export default defineConfig({
         vue(),
         tailwindcss(),
     ],
+    //addition to fix WebSocket connection to 'ws://[::1]:5173/' failed:
+    server: {
+        hmr: {
+            host: 'localhost',
+            protocol: 'ws://', 
+        },
+    },
 });

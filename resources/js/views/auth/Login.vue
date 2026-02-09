@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen flex items-center justify-start pl-24">
-    <form @submit.prevent="handleSubmit" novalidate ref="form" class="bg-indigo-300 w-1/3 rounded-xl shadow-2xl border-2 border-slate-200 max-w-md p-8 space-y-5">
+    <form @submit.prevent="handleSubmit" novalidate ref="formEl" class="bg-indigo-300 w-1/3 rounded-xl shadow-2xl border-2 border-slate-200 max-w-md p-8 space-y-5">
       <div class="space-y-2">
         <label for="username" class="block text-sm font-semibold text-slate-700">Username:</label>
         <input type="text" v-model.lazy.trim="form.username" class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 bg-slate-50 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
@@ -22,6 +22,7 @@
       <div class="flex items-center gap-3 py-2">
         <input type="checkbox" id="remember" v-model="form.remember" class="w-4 h-4 rounded border-2 border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-200">
         <label for="remember" class="text-sm text-slate-600 cursor-pointer">Remember me</label>
+        
       </div>
 
       <!-- Submit -->
@@ -42,6 +43,8 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import axiosInstance from '../../api/axios';
+
 
 const router = useRouter();
 
@@ -55,8 +58,9 @@ const form = ref({
 // handler sends a POST request to the login/auth HTTP endpoint.
 const handleSubmit = async () => {
   try {
+    console.log('submit fired',form.value);
     // Send a POST request to your Laravel API endpoint
-    const response = await window.axios.post('/api/auth/login', form.value);
+    const response = await axiosInstance.post('/api/auth/login', form.value);
     
     console.log('Login successful:', response.data);
     // TODO: Handle successful login (e.g., store token, redirect)

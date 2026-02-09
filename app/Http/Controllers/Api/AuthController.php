@@ -1,13 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Password;          //pwd requirements
 /* 
-POST /api/auth/register → AuthController@register
 POST /api/auth/logout → AuthController@logout (needs auth middleware)
-POST /api/auth/forgot-password → AuthController@forgotPassword
 */
 class AuthController extends Controller
 {
@@ -16,7 +14,7 @@ class AuthController extends Controller
         //validation
         $validatedForm= $request->validate([
             'email' => 'required|email',
-            'password' => 'required|min:6',
+            'password' => 'required|min:8',
             'username' => 'nullable|string'
         ]);
         //find user
@@ -53,43 +51,35 @@ class AuthController extends Controller
         ], 200);
     }
     
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function Register(Request $request)
     {
-        //
-    }
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => [
+                'required',
+                'confirmed',
+                Password::min(8)         
+                    ->mixedCase()      
+                    ->letters()        
+                    ->numbers()        
+                    ->symbols(),       
+            ],
+        ]);
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        // Generate authentication token
+        $token = $user->createToken('auth-token')->plainTextToken;
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()-> json([
+            'success' => true,
+            'message' => 'User registered successfully',
+            'user' => $user,
+            'token' => $token,
+        ],201);
     }
 }
