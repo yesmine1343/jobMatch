@@ -111,4 +111,34 @@ class AuthController extends Controller
             'message' => $exists ? 'Username is already taken' : 'Username is available'
         ]);
     }
+    public function handleEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $email = $request->email;
+        $apiKey = config('services.openai.key');
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $apiKey,
+            'Content-Type'  => 'application/json',
+        ])->post('https://api.openai.com/v1/chat/completions', [
+            'model' => 'gpt-4o-mini',
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => 'You are a helpful assistant.',
+                ],
+                [
+                    'role' => 'user',
+                    'content' => "User submitted this email: {$email}. Respond politely.",
+                ],
+            ],
+        ]);
+
+        return response()->json([
+            'message' => $response->json('choices.0.message.content'),
+        ]);
+    }
 }
