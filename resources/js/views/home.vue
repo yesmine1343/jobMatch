@@ -33,8 +33,14 @@
       </p>
 
       <div class="text-center mt-4">
-        <a href="" @click.prevent="$router.push({ name: 'Login' })" class="text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium">
+        <a href="" v-if="!isAuthenticated" @click.prevent="$router.push({ name: 'Login' })" class="text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium">
           Login
+        </a>
+      </div>
+
+      <div class="text-center mt-4">
+        <a href="" v-if="isAuthenticated" @click.prevent="handleLogout" class="text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium">
+          Logout
         </a>
       </div>
 
@@ -47,23 +53,45 @@
   </section>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const showRedirectPrompt = ref(false)
+const isAuthenticated = ref(false)
 
-const isAuthenticated = () => {
-  return !!localStorage.getItem('token')
-}
+onMounted(() => {
+  isAuthenticated.value = !!localStorage.getItem('token')
+})
 
 const continueAction = () => {
-  if (!isAuthenticated()) {
+  if (!isAuthenticated.value) {
     showRedirectPrompt.value = true
     return
   }
 
-  router.push({ name: 'Dashboard' })
+ // router.push({ name: 'Dashboard' }) // Make sure 'Dashboard' route exists, otherwise this might fail if not defined
+}
+
+const handleLogout = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        if (token) {
+            // Tell the backend to revoke the token
+            await axiosInstance.post('/api/auth/logout', {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+    } finally {
+        // ALWAYS clear local state even if the API call fails
+        localStorage.removeItem('token');
+        isAuthenticated.value = false;
+        router.push({ name: 'home' }); 
+    }
 }
 
 const goLogin = () => router.push({ name: 'Login' })

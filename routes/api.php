@@ -19,8 +19,13 @@ Route::post('/auth/register',[AuthController::class,'register']);
 
 Route::post('/auth/check-username',[AuthController::class,'checkUsername']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
 });
-//zerobounce email verification 
+//zerobounce email is real or not verification 
 Route::post('/email-submit', [AuthController::class, 'handleEmail']); 
+//user identity verification
+Route::post('/user-identity-verification', [AuthController::class, 'userIdentityVerification']);

@@ -3,6 +3,7 @@ import Home from '../views/home.vue';
 import Login from '../views/auth/Login.vue';
 import Register from '../views/auth/Register.vue';
 import ForgotPassword from '../views/auth/ForgotPassword.vue'
+import UserIdentityVerification from '../views/auth/userIdentityVerification.vue'
 
 const routes = [
     {
@@ -24,6 +25,11 @@ const routes = [
         path: '/forgot-password',
         name: 'ForgotPassword',
         component: ForgotPassword,
+    },
+    {
+        path: '/user-identity-verification',
+        name: 'UserIdentityVerification',
+        component: UserIdentityVerification,
     }
 ];
 
@@ -47,7 +53,15 @@ router.beforeEach((to, from, next) => {
 
     // If user has token and tries to access login/register, ask if they want to switch accounts
     if (token && isAuthPage) {
-        const wantToSwitch = confirm('You are already logged in. Do you want to log in with another account?');
+        let message = 'You are already logged in. Do you want to log in with another account?';
+
+        if (to.name === 'register') {
+            message = 'You are currently logged in. Do you want to log out and create a new account?';
+        } else if (to.name === 'login') {
+            message = 'You are currently logged in. Do you want to log out and switch accounts?';
+        }
+
+        const wantToSwitch = confirm(message);
 
         if (wantToSwitch) {
             // Clear current token and proceed to auth page

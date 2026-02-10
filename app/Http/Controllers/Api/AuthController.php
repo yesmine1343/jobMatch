@@ -7,12 +7,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Validation\Rules\Password;          //pwd requirements
+use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 /* 
 POST /api/auth/logout → AuthController@logout (needs auth middleware)
 */
 class AuthController extends Controller
 {
+    public function logout(Request $request)
+    {
+        // Revoke the token that was used to authenticate the current request
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Successfully logged out'
+        ], 200);
+    }
+
     public function login(Request $request)
     {
         // Validation
@@ -52,17 +63,18 @@ class AuthController extends Controller
         ], 200);
     }
 
-    // Handler sfor forgot password functionality
     public function forgotPassword(Request $request)
     {
-        $validated = $request->validate([
-            'email' => 'required|email|exists:users,email',
-        ]);
+        $request->validate(['email' => 'required|email']);
 
-        // TODO: Send password reset email
-        // For now, just return success message
+        // This sends a secure token to the user's email
+        $status = Password::broker()->sendResetLink(
+            $request->only('email')
+        );
+
+        // We return success regardless for security reasons
         return response()->json([
-            'message' => 'Password reset email sent successfully'
+            'message' => 'If an account exists with this email, you will receive a reset link.'
         ], 200);
     }
     
@@ -74,7 +86,7 @@ class AuthController extends Controller
             'password' => [
                 'required',
                 'confirmed',
-                Password::min(8)         
+                PasswordRule::min(8)         
                     ->mixedCase()      
                     ->letters()        
                     ->numbers()        
@@ -148,9 +160,6 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Helper to call ZeroBounce API
-     */
     private function validateEmailWithZeroBounce($email)
     {
         $apiKey = config('services.zerobounce.key');
@@ -165,5 +174,17 @@ class AuthController extends Controller
             \Log::error("ZeroBounce Error: " . $e->getMessage());
             return ['status' => 'unknown', 'error' => $e->getMessage()];
         }
+    }
+    
+    public function userIdentityVerification(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+
+        return response()->json([
+            
+        ]);
     }
 }
