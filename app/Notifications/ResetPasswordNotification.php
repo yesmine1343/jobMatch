@@ -31,8 +31,7 @@ class ResetPasswordNotification extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
-        // Build the full URL to your Vue frontend reset page
-        $url = url('/app/reset-password?token='.$this->token.'&email='.urlencode($notifiable->getEmailForPasswordReset()));
+        $url = url('/app/reset-password?token=' . $this->token . '&email=' . urlencode($notifiable->getEmailForPasswordReset()));
 
         return (new MailMessage)
                     ->subject('Reset Your Password - JobMatch')

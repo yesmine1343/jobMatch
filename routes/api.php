@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 });
 
-Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
+Route::post('/auth/reset-password', [AuthController::class, 'ResetPassword']);
 //zerobounce email is real or not verification 
 Route::post('/email-submit', [AuthController::class, 'handleEmail']); 
 //user identity verification

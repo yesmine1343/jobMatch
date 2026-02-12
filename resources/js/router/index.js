@@ -54,7 +54,7 @@ Route::get('/app/{any?}', function () {
 
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('token');
-    const authPages = ['login', 'register', 'ForgotPassword'];
+    const authPages = ['login', 'register', 'ForgotPassword', 'ResetPassword', 'UserIdentityVerification'];
     const isAuthPage = authPages.includes(to.name);
 
     // If user has token and tries to access login/register, ask if they want to switch accounts
