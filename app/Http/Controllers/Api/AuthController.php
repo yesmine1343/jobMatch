@@ -62,10 +62,14 @@ class AuthController extends Controller
             'token' => $token
         ], 200);
     }
-
+//reset link broker
     public function forgotPassword(Request $request)
     {
         $request->validate(['email' => 'required|email']);
+
+        // Debug: Check if user exists
+        $userExists = \App\Models\User::where('email', $request->email)->exists();
+        \Log::info("Password reset requested for: " . $request->email . " (Exists: " . ($userExists ? 'Yes' : 'No') . ")");
 
         // This sends a secure token to the user's email
         $status = Password::broker()->sendResetLink(
@@ -76,6 +80,34 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'If an account exists with this email, you will receive a reset link.'
         ], 200);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => [
+                'required',
+                'confirmed',
+                PasswordRule::min(8)->mixedCase()->letters()->numbers()->symbols(),
+            ],
+        ]);
+
+        $status = Password::broker()->reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(\Illuminate\Support\Str::random(60));
+
+                $user->save();
+            }
+        );
+
+        return $status === Password::PASSWORD_RESET
+            ? response()->json(['message' => 'Password has been reset.'], 200)
+            : response()->json(['message' => 'Invalid token or email.'], 422);
     }
     
     public function Register(Request $request)
@@ -187,4 +219,16 @@ class AuthController extends Controller
             
         ]);
     }
+    
+/* 
+Sender → controlled by .env
+Receiver → controlled in controller with Mail::to()
+*/
+    public function sendEmail(Request $request)
+    {
+        $receiver = $request->email;
+
+        Mail::to($receiver)->send(new TestMail());
+    }
+
 }

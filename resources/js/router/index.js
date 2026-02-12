@@ -4,6 +4,7 @@ import Login from '../views/auth/Login.vue';
 import Register from '../views/auth/Register.vue';
 import ForgotPassword from '../views/auth/ForgotPassword.vue'
 import UserIdentityVerification from '../views/auth/userIdentityVerification.vue'
+import ResetPassword from '../views/auth/ResetPassword.vue'
 
 const routes = [
     {
@@ -30,6 +31,11 @@ const routes = [
         path: '/user-identity-verification',
         name: 'UserIdentityVerification',
         component: UserIdentityVerification,
+    },
+    {
+        path: '/reset-password',
+        name: 'ResetPassword',
+        component: ResetPassword,
     }
 ];
 
