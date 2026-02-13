@@ -32,7 +32,7 @@
 
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axiosInstance from '../api/axios';
 
@@ -41,20 +41,22 @@ const route = useRoute();
 const isAuthenticated = ref(false);
 
 const checkAuth = () => {
-  isAuthenticated.value = !!localStorage.getItem('token');
+  const token = localStorage.getItem('token');
+  console.log('Checking auth, token:', token); // DEBUG
+  isAuthenticated.value = !!token;
 };
 
-onMounted(() => {
-  checkAuth();
-});
+// Check auth immediately when app loads
+checkAuth();
 
-// Watch for route changes to update auth status (e.g., after login/logout)
+// Re-check auth every time the route changes
 watch(() => route.path, () => {
+  console.log('Route changed to:', route.path); // DEBUG
   checkAuth();
-});
+}, { immediate: true });
 
 const goBack = () => {
-  router.go(-1); // Go to previous page
+  router.go(-1);
 };
 
 const handleLogout = async () => {
@@ -71,7 +73,7 @@ const handleLogout = async () => {
     console.error('Logout error:', error);
   } finally {
     localStorage.removeItem('token');
-    isAuthenticated.value = false;
+    checkAuth(); // Re-check immediately after logout
     router.push({ name: 'login' });
   }
 };

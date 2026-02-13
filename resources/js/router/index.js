@@ -8,6 +8,7 @@ import ResetPassword from '../views/auth/ResetPassword.vue'
 import RoleSelection from '../views/Role/role-selection.vue'
 import CandidateProfileSetup from '../views/candidate/profile-setup.vue'
 import RecruiterProfileSetup from '../views/recruiter/profile-setup.vue'
+import DashboardPreview from '../views/Role/DashboardPreview.vue'
 
 const routes = [
     {
@@ -55,6 +56,11 @@ const routes = [
         name: 'recruiterProfileSetup',
         component: RecruiterProfileSetup,
     },
+    {
+        path: '/Role/DashboardPreview',
+        name: 'DashboardPreview',
+        component: DashboardPreview,
+    },
 ];
 
 const router = createRouter({
@@ -69,7 +75,7 @@ We have a list called authPages. If the route the user is trying to visit is NOT
 
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('token');
-    const authPages = ['home', 'login', 'register', 'ForgotPassword', 'ResetPassword', 'UserIdentityVerification'];
+    const authPages = ['login', 'register', 'ForgotPassword', 'ResetPassword', 'UserIdentityVerification'];
     const isAuthPage = authPages.includes(to.name);
 
     // If user has token and tries to access login/register, ask if they want to switch accounts
