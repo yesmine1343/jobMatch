@@ -102,6 +102,9 @@ class AuthController extends Controller
                 ])->setRememberToken(\Illuminate\Support\Str::random(60));
 
                 $user->save();
+
+                // Revoke all tokens to logout from all devices
+                $user->tokens()->delete();
             }
         );
 

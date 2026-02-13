@@ -1,99 +1,131 @@
 <template>
-  <section class="max-w-3xl mx-auto pt-20 text-center space-y-6">
-    <h1 class="text-4xl font-bold text-slate-800">
-      Welcome to JobMatch
-    </h1>
-
-    <p class="text-lg text-slate-600">
-      JobMatch helps you connect with opportunities that actually fit your skills.
-      Save time, track applications, and get matched faster.
-    </p>
-
-    <p class="text-slate-500">
-      To personalize your experience and keep your data secure,
-      you’ll need an account.
-    </p>
-
-    <button
-      @click="continueAction"
-      class="mt-8 px-8 py-3 bg-blue-600 text-white rounded-lg
-             hover:bg-blue-700 transition"
-    >
-      Get started
-    </button>
-
-    <!-- Redirect prompt -->
-    <div
-      v-if="showRedirectPrompt"
-      class="mt-10 bg-slate-50 border border-slate-200 rounded-lg p-6"
-    >
-      <p class="text-slate-700 mb-4">
-        You’re almost there.
-        Please login or create an account to continue.
+  <section class="max-w-6xl mx-auto pt-20 pb-12 px-4">
+    <!-- Hero Section - Always visible -->
+    <div class="text-center space-y-6 mb-16">
+      <h1 class="text-5xl font-bold text-sky-400">
+        Welcome to JobMatch
+      </h1>
+      <br><br>
+      <h2 class="text-2xl font-semibold text-white">
+        The smarter way to match jobs & talents
+      </h2>
+      <br>
+      <p class="text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed">
+        AI-powered skill gap analysis shows you what to learn to unlock more opportunities.<br>
+        Intelligent candidate matching algorithm to save recruiters hours of evaluation time. 
+        
       </p>
 
-      <div class="text-center mt-4">
-        <a href="" v-if="!isAuthenticated" @click.prevent="$router.push({ name: 'Login' })" class="text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium">
-          Login
-        </a>
+      <!-- Get Started Button - Only show if dashboard not visible -->
+      <div class="pt-6" v-if="!showDashboard">
+        <button
+          @click="handleGetStarted"
+          class="px-10 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg
+                 hover:bg-blue-700 transform hover:scale-105 transition-all duration-200
+                 shadow-lg hover:shadow-xl"
+        >
+          Get Started →
+        </button>
       </div>
 
-      <div class="text-center mt-4">
-        <a href="" v-if="isAuthenticated" @click.prevent="handleLogout" class="text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium">
-          Logout
-        </a>
-      </div>
+      <p class="text-slate-400 text-sm pt-2">
+        To personalize your experience and keep your data secure, you'll need an account.
+      </p>
+    </div>
 
-      <div class="text-center mt-4">
-        <a href="" @click.prevent="$router.push({ name: 'Register' })" class="text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium">
-          sign up
-        </a>
+    <!-- Dashboard Preview Section - Only show after "Get Started" is clicked -->
+    <div v-if="showDashboard" class="max-w-5xl mx-auto">
+      <div class="text-center mb-8">
+        <h3 class="text-2xl font-bold text-white mb-2">
+          Here's what your dashboard will look like
+        </h3>
+        <p class="text-slate-300">
+          Click "Set Up Your Profile" below to continue
+        </p>
+      </div>
+      
+      <DashboardPreview @setup="handleSetupProfile" />
+    </div>
+
+    <!-- Auth Prompt Modal (shown when not logged in) -->
+    <div
+      v-if="showAuthPrompt"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      @click="showAuthPrompt = false"
+    >
+      <div
+        class="bg-white rounded-xl p-8 max-w-md mx-4 shadow-2xl"
+        @click.stop
+      >
+        <h3 class="text-2xl font-bold text-slate-800 mb-4">
+          You're almost there!
+        </h3>
+        
+        <p class="text-slate-600 mb-6">
+          Please login or create an account to continue.
+        </p>
+
+        <div class="flex gap-4">
+          <button
+            @click="$router.push({ name: 'login' })"
+            class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg
+                   hover:bg-blue-700 transition font-medium"
+          >
+            Login
+          </button>
+          
+          <button
+            @click="$router.push({ name: 'register' })"
+            class="flex-1 px-6 py-3 bg-slate-200 text-slate-800 rounded-lg
+                   hover:bg-slate-300 transition font-medium"
+          >
+            Sign Up
+          </button>
+        </div>
+
+        <button
+          @click="showAuthPrompt = false"
+          class="w-full mt-4 text-slate-500 hover:text-slate-700 text-sm"
+        >
+          Cancel
+        </button>
       </div>
     </div>
   </section>
 </template>
+
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import DashboardPreview from '../components/DashboardPreview.vue'
 
 const router = useRouter()
-const showRedirectPrompt = ref(false)
+const showAuthPrompt = ref(false)
+const showDashboard = ref(false)
 const isAuthenticated = ref(false)
 
 onMounted(() => {
   isAuthenticated.value = !!localStorage.getItem('token')
 })
 
-const continueAction = () => {
-  if (!isAuthenticated.value) {
-    showRedirectPrompt.value = true
-    return
-  }
-
- // router.push({ name: 'Dashboard' }) // Make sure 'Dashboard' route exists, otherwise this might fail if not defined
-}
-
-const handleLogout = async () => {
-    try {
-        const token = localStorage.getItem('token');
-        if (token) {
-            // Tell the backend to revoke the token
-            await axiosInstance.post('/api/auth/logout', {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-        }
-    } catch (error) {
-        console.error('Logout error:', error);
-    } finally {
-        // ALWAYS clear local state even if the API call fails
-        localStorage.removeItem('token');
-        isAuthenticated.value = false;
-        router.push({ name: 'home' }); 
+const handleGetStarted = () => {
+  // Show the dashboard preview
+  showDashboard.value = true
+  
+  // Smooth scroll to dashboard
+  setTimeout(() => {
+    const dashboardElement = document.querySelector('.max-w-5xl')
+    if (dashboardElement) {
+      dashboardElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
+  }, 100)
 }
 
-const goLogin = () => router.push({ name: 'Login' })
-const goRegister = () => router.push({ name: 'Register' })
+const handleSetupProfile = () => {
+  if (!isAuthenticated.value) {
+    showAuthPrompt.value = true
+  } else {
+    router.push({ name: 'RoleSelection' })
+  }
+}
 </script>

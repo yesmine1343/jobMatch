@@ -5,6 +5,9 @@ import Register from '../views/auth/Register.vue';
 import ForgotPassword from '../views/auth/ForgotPassword.vue'
 import UserIdentityVerification from '../views/auth/userIdentityVerification.vue'
 import ResetPassword from '../views/auth/ResetPassword.vue'
+import RoleSelection from '../views/Role/role-selection.vue'
+import CandidateProfileSetup from '../views/candidate/profile-setup.vue'
+import RecruiterProfileSetup from '../views/recruiter/profile-setup.vue'
 
 const routes = [
     {
@@ -36,25 +39,37 @@ const routes = [
         path: '/reset-password',
         name: 'ResetPassword',
         component: ResetPassword,
-    }
+    },
+    {
+        path: '/Role/role-selection',
+        name: 'RoleSelection',
+        component: RoleSelection,
+    },
+    {
+        path: '/candidate/profile-setup',
+        name: 'candidateProfileSetup',
+        component: CandidateProfileSetup,
+    },
+    {
+        path: '/recruiter/profile-setup',
+        name: 'recruiterProfileSetup',
+        component: RecruiterProfileSetup,
+    },
 ];
 
 const router = createRouter({
     history: createWebHistory('/app/'),         //= My app lives under /app
     routes,
 });
-/* 
-ADDITION UP IN ROUTER VARIABLE NECESSARY AFTER CHANGES LIKE ->  
-
-Route::get('/app/{any?}', function () {
-    return view('app');
-})->where('any', '.*');
-
+/*
+How it works: Every time a user clicks a link or changes the URL, the router.beforeEach function runs before the page actually loads.
+We have a list called authPages. If the route the user is trying to visit is NOT in that list 
+(like a dashboard or profile setup) and they don't have a token, the guard stops them and redirects them to /login.
 */
 
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('token');
-    const authPages = ['login', 'register', 'ForgotPassword', 'ResetPassword', 'UserIdentityVerification'];
+    const authPages = ['home', 'login', 'register', 'ForgotPassword', 'ResetPassword', 'UserIdentityVerification'];
     const isAuthPage = authPages.includes(to.name);
 
     // If user has token and tries to access login/register, ask if they want to switch accounts
@@ -78,7 +93,6 @@ router.beforeEach((to, from, next) => {
             return next({ name: 'home' });
         }
     }
-
     // If user doesn't have token and tries to access protected page, redirect to login
     if (!token && !isAuthPage) {
         return next({ name: 'login' });
@@ -87,12 +101,5 @@ router.beforeEach((to, from, next) => {
     next();
 });
 
-/* 
-beforeEach is a navigation guard. Right now it only logs.execute code before a user is redirected.
- It acts as a middleware that triggers on every navigation attempt,
- allowing you to validate, cancel, or redirect the user before the new route is confirmed. 
-Later it will: block unauthenticated users ,redirect logged-in users ,enforce roles ,protect pages
-*/
-//https://router.vuejs.org/guide/advanced/navigation-guards.html
 
 export default router;

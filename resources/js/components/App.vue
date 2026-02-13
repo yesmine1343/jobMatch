@@ -3,11 +3,23 @@
   <div class="app-container">
     <header class="app-header">
       <div class="container">
-        <h1 class="logo">JobMatch</h1>
+        <!-- Logo routes to home -->
+        <router-link to="/" class="logo-link">
+          <h1 class="logo">JobMatch</h1>
+        </router-link>
+        
         <nav class="nav-links">
-          <router-link to="/" class="nav-link">Home</router-link>
-          <router-link to="/login" class="nav-link">Login</router-link>
-          <router-link to="/register" class="nav-link">Register</router-link>
+          <!-- NOT logged in: Show Login & Register -->
+          <template v-if="!isAuthenticated">
+            <router-link to="/login" class="nav-link">Login</router-link>
+            <router-link to="/register" class="nav-link">Register</router-link>
+          </template>
+
+          <!-- Logged in: Show Go Back & Logout -->
+          <template v-else>
+            <a href="#" class="nav-link" @click.prevent="goBack">← Go Back</a>
+            <a href="#" class="nav-link" @click.prevent="handleLogout">Logout</a>
+          </template>
         </nav>
       </div>
     </header>
@@ -18,8 +30,51 @@
   </div>
 </template>
 
-<script setup>
 
+<script setup>
+import { ref, onMounted, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import axiosInstance from '../api/axios';
+
+const router = useRouter();
+const route = useRoute();
+const isAuthenticated = ref(false);
+
+const checkAuth = () => {
+  isAuthenticated.value = !!localStorage.getItem('token');
+};
+
+onMounted(() => {
+  checkAuth();
+});
+
+// Watch for route changes to update auth status (e.g., after login/logout)
+watch(() => route.path, () => {
+  checkAuth();
+});
+
+const goBack = () => {
+  router.go(-1); // Go to previous page
+};
+
+const handleLogout = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (token) {
+      await axiosInstance.post('/api/auth/logout', {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    }
+  } catch (error) {
+    console.error('Logout error:', error);
+  } finally {
+    localStorage.removeItem('token');
+    isAuthenticated.value = false;
+    router.push({ name: 'login' });
+  }
+};
 </script>
 
 <style scoped>
@@ -63,11 +118,20 @@
   align-items: center;
 }
 
+.logo-link {
+  text-decoration: none;
+}
+
 .logo {
   font-size: 1.5rem;
   font-weight: bold;
   color: #60a5fa;
   margin: 0;
+  cursor: pointer;
+}
+
+.logo:hover {
+  color: #3b82f6;
 }
 
 .nav-links {
@@ -80,6 +144,7 @@
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s;
+  cursor: pointer;
 }
 
 .nav-link:hover,
