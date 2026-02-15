@@ -9,11 +9,7 @@
       </p>
     </div>
 
-    <!-- Your dashboard mockup/preview content here -->
-    <div class="bg-slate-800 rounded-lg p-8 mb-8">
-      <p class="text-white">Dashboard preview content goes here...</p>
-      <!-- Add your charts, cards, etc -->
-    </div>
+
 
     <!-- Set Up Profile Button -->
     <div class="text-center">
