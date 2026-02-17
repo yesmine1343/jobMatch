@@ -35,8 +35,12 @@
       </div>
 
       <!-- Submit -->
-      <button type="submit" class="w-full rounded-lg bg-blue-600 hover:bg-blue-700 px-4 py-3 text-base font-semibold text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow-md">
-        Submit
+      <button 
+        type="submit" 
+        :disabled="isLoading"
+        class="w-full rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed px-4 py-3 text-base font-semibold text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow-md"
+      >
+        {{ isLoading ? 'Logging in...' : 'Submit' }}
       </button>
 
       <!-- Forgot password -->
@@ -65,11 +69,16 @@ const form = ref({
 });
 
 const errorType = ref('');
+const isLoading = ref(false);
 
 // handler sends a POST request to the login/auth HTTP endpoint.
 const handleSubmit = async () => {
+  // Prevent multiple submissions
+  if (isLoading.value) return;
+  
   // Clear previous error
   errorType.value = '';
+  isLoading.value = true;
   
   try {
     // Send a POST request to your Laravel API endpoint
@@ -90,6 +99,8 @@ const handleSubmit = async () => {
     if (error.response?.data?.error_type) {
       errorType.value = error.response.data.error_type;
     }
+  } finally {
+    isLoading.value = false;
   }
 };
 

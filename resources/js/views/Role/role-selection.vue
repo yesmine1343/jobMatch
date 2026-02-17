@@ -76,9 +76,9 @@ const router = useRouter();
 
 const onClick = (type) => {
   if (type === 'candidate') {
-    router.push('/candidate');
+    router.push('/candidate/profile-setup');
   } else if (type === 'recruiter') {
-    router.push('/recruiter');
+    router.push('/recruiter/profile-setup');
   }
 };
 </script>

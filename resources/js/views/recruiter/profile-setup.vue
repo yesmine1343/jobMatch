@@ -1,50 +1,145 @@
 <template>
-  <div class="card p-6 bg-slate-800 rounded-xl shadow-lg border border-slate-700 max-w-sm mx-auto mt-10">
-    <div class="space-y-4">
-      <div class="relative">
-        <img src="https://placehold.co/400x400/1e293b/60a5fa?text=Employer+Avatar" alt="Employer Profile" class="w-full h-48 object-cover rounded-lg border-2 border-slate-700">
-        <div class="absolute -bottom-4 right-4 bg-blue-600 p-2 rounded-full border-2 border-slate-800">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+  <div class="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-5">
+    <div class="bg-slate-800 rounded-xl p-10 max-w-3xl w-full shadow-2xl">
+      
+      <!-- Header -->
+      <p class="text-slate-400 text-sm mb-8">Set up your company profile to get started</p>
+
+      <!-- Company Name -->
+      <div class="mb-6">
+        <label class="block text-slate-200 text-sm font-medium mb-2.5">Company Name</label>
+        <input 
+          v-model="formData.companyName" 
+          type="text" 
+          placeholder="Enter your company name..."
+          class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500 placeholder-slate-500"
+        />
+      </div>
+
+      <!-- Industry -->
+      <div class="mb-6">
+        <label class="block text-slate-200 text-sm font-medium mb-2.5">Industry</label>
+        <div class="relative">
+          <select 
+            v-model="formData.industry" 
+            class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500 cursor-pointer appearance-none"
+          >
+            <option value="">Select industry...</option>
+            <option value="technology">Information Technology</option>
+            <option value="finance">Finance</option>
+            <option value="healthcare">Healthcare</option>
+            <option value="education">Education</option>
+            <option value="retail">Retail</option>
+            <option value="manufacturing">Manufacturing</option>
+            <option value="consulting">Consulting</option>
+          </select>
+          <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </div>
       </div>
 
-      <div class="text-center pt-2">
-        <h1 class="text-2xl font-bold text-white tracking-tight">John Doe</h1>
-        <p class="text-blue-400 font-medium tracking-wide uppercase text-xs">CEO & Founder, JobMatch</p>
+      <!-- Company Size -->
+      <div class="mb-6">
+        <label class="block text-slate-200 text-sm font-medium mb-2.5">Company Size</label>
+        <div class="flex gap-3">
+          <button 
+            v-for="size in ['1-10', '11-50', '51-200', '201-500', '500+']" 
+            :key="size"
+            :class="[
+              'flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all',
+              formData.companySize === size 
+                ? 'bg-blue-600 text-white' 
+                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+            ]"
+            @click="formData.companySize = size"
+            type="button"
+          >
+            {{ size }}
+          </button>
+        </div>
       </div>
 
-      <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50">
-        <p class="text-slate-400 text-sm italic text-center leading-relaxed">
-          "Connecting the best talent with world-class opportunities."
-        </p>
+      <!-- Default Hiring Location -->
+      <div class="mb-6">
+        <label class="block text-slate-200 text-sm font-medium mb-2.5">Default Hiring Location</label>
+        <input 
+          v-model="formData.hiringLocation" 
+          type="text" 
+          placeholder="Start typing location..."
+          class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500 placeholder-slate-500"
+        />
+        <span class="block text-slate-500 text-xs mt-1.5">Type to search cities, countries, or regions</span>
       </div>
 
-      <div class="flex justify-center gap-4 text-slate-400">
-        <a href="#" class="hover:text-blue-400 transition-colors">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm3 8h-1.35c-.538 0-.65.221-.65.778v1.222h2l-.209 2h-1.791v7h-3v-7h-2v-2h2v-2.308c0-1.769.931-2.692 3.029-2.692h1.971v3z"/></svg>
-        </a>
-        <a href="#" class="hover:text-sky-400 transition-colors">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
-        </a>
+      <!-- Default Work Model -->
+      <div class="mb-8">
+        <label class="block text-slate-200 text-sm font-medium mb-2.5">Default Work Model</label>
+        <div class="flex gap-3">
+          <button 
+            v-for="model in ['Remote', 'Hybrid', 'On-site']" 
+            :key="model"
+            :class="[
+              'flex-1 px-6 py-2.5 rounded-lg text-sm font-medium transition-all',
+              formData.workModel === model 
+                ? 'bg-blue-600 text-white' 
+                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+            ]"
+            @click="formData.workModel = model"
+            type="button"
+          >
+            {{ model }}
+          </button>
+        </div>
       </div>
 
-      <button class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transition-all duration-200 shadow-lg shadow-blue-500/20 active:scale-[0.98]">
-        Contact Representative
-      </button>
+      <!-- Action Buttons -->
+      <div class="flex gap-3">
+        <button 
+          @click="submit"
+          :disabled="isLoading"
+          class="flex-1 bg-blue-600 text-white rounded-lg px-6 py-3 text-sm font-medium hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed transition-all"
+          type="button"
+        >
+          {{ isLoading ? 'Submitting...' : 'Continue' }}
+        </button>
+      </div>
+
     </div>
   </div>
 </template>
 
 <script setup>
-</script>
+import { reactive, ref } from 'vue';
+import { useRoute,useRouter } from 'vue-router';
 
-<style scoped>
-.card {
-  transition: transform 0.3s ease;
-}
-.card:hover {
-  transform: translateY(-5px);
-}
-</style>
+const router = useRouter();
+const isLoading = ref(false);
+
+const formData = reactive({
+  companyName: '',
+  industry: '',
+  companySize: '11-50',
+  hiringLocation: '',
+  workModel: 'Hybrid'
+});
+
+const submit = async () => {
+  // Prevent multiple submissions
+  if (isLoading.value) return;
+  
+  isLoading.value = true;
+  
+  try {
+    // Handle Laravel API call
+    // await axiosInstance.post('/api/recruiter/profile', formData);
+    
+    console.log('Recruiter Setup:', formData);
+    router.push({name:'Rdashboard'});
+  } catch (error) {
+    console.error('Error submitting profile:', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+</script>

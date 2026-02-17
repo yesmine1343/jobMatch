@@ -70,8 +70,12 @@
       </div>
 
       <!-- Submit -->
-      <button type="submit" class="w-full rounded-lg bg-blue-600 hover:opacity-90 px-4 py-3 text-base font-semibold text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow-md">
-        Register
+      <button 
+        type="submit" 
+        :disabled="isLoading"
+        class="w-full rounded-lg bg-blue-600 hover:opacity-90 disabled:bg-blue-400 disabled:cursor-not-allowed px-4 py-3 text-base font-semibold text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 shadow-md"
+      >
+        {{ isLoading ? 'Registering...' : 'Register' }}
       </button>
 
       <!-- Login link -->
@@ -101,6 +105,7 @@ const form = ref({
 const usernameStatus = ref(''); // 'checking', 'available', 'taken', ''
 const showEmptyFieldsMessage = ref(false);
 const backendError = ref('');
+const isLoading = ref(false);
 
 // Debounce timer
 let debounceTimer = null;
@@ -177,6 +182,9 @@ onMounted(() => {
 });
 
 const handleSubmit = async () => {
+  // Prevent multiple submissions
+  if (isLoading.value) return;
+  
   backendError.value = ''; // Clear previous error
 
   // Check for empty fields first
@@ -193,6 +201,8 @@ const handleSubmit = async () => {
     alert('Please choose an available username');
     return;
   }
+
+  isLoading.value = true;
 
   try {
     // Send a POST request to your Laravel API endpoint
@@ -218,6 +228,8 @@ const handleSubmit = async () => {
     } else {
        backendError.value = 'An error occurred during registration.';
     }
+  } finally {
+    isLoading.value = false;
   }
 };
 </script>

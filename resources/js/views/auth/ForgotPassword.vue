@@ -8,8 +8,12 @@
       </div>
 
       <div>
-        <button type="submit" class="w-full rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-          Reset Password
+        <button 
+          type="submit" 
+          :disabled="isLoading"
+          class="w-full rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:bg-indigo-400 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          {{ isLoading ? 'Sending...' : 'Reset Password' }}
         </button>
       </div>
     </form>
@@ -38,12 +42,18 @@ import axiosInstance from '../../api/axios';
 
 const router = useRouter();
 const successMessage = ref('');
+const isLoading = ref(false);
 
 const form = ref({
   email: '',
 });
 
 const handleSubmit = async () => {
+  // Prevent multiple submissions
+  if (isLoading.value) return;
+  
+  isLoading.value = true;
+  
   try {
     const response = await axiosInstance.post('/api/auth/forgot-password', form.value);
     
@@ -56,6 +66,8 @@ const handleSubmit = async () => {
 
   } catch (error) {
     console.error('Error:', error.response?.data || error.message);
+  } finally {
+    isLoading.value = false;
   }
 };
 

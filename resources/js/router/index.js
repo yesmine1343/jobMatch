@@ -2,13 +2,17 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/home.vue';
 import Login from '../views/auth/Login.vue';
 import Register from '../views/auth/Register.vue';
-import ForgotPassword from '../views/auth/ForgotPassword.vue'
-import UserIdentityVerification from '../views/auth/userIdentityVerification.vue'
-import ResetPassword from '../views/auth/ResetPassword.vue'
-import RoleSelection from '../views/Role/role-selection.vue'
-import CandidateProfileSetup from '../views/candidate/profile-setup.vue'
-import RecruiterProfileSetup from '../views/recruiter/profile-setup.vue'
-import DashboardPreview from '../views/Role/DashboardPreview.vue'
+import ForgotPassword from '../views/auth/ForgotPassword.vue';
+import UserIdentityVerification from '../views/auth/userIdentityVerification.vue';
+import ResetPassword from '../views/auth/ResetPassword.vue';
+import RoleSelection from '../views/Role/role-selection.vue';
+import CandidateProfileSetup from '../views/candidate/profile-setup.vue';
+import RecruiterProfileSetup from '../views/recruiter/profile-setup.vue';
+import DashboardPreview from '../views/Role/DashboardPreview.vue';
+import CandidateDashboard from '../views/candidate/dashboard.vue';
+import RecruiterDashboard from '../views/recruiter/dashboard.vue';
+import CreateJob from '../views/recruiter/create-job.vue';
+
 
 const routes = [
     {
@@ -61,6 +65,26 @@ const routes = [
         name: 'DashboardPreview',
         component: DashboardPreview,
     },
+    {
+        path: '/candidate/dashboard',
+        name: 'Cdashboard',
+        component: CandidateDashboard,
+    },
+    {
+        path: '/recruiter/dashboard',
+        name: 'Rdashboard',
+        component: RecruiterDashboard,
+    },
+    {
+        path: '/recruiter/create-job',
+        name: 'CreateJob',
+        component: 'CreateJob',
+    },
+    {
+        path: '/recruiter/match-score',
+        name: 'MatchScore',
+        component: 'MatchScore',
+    }
 ];
 
 const router = createRouter({
