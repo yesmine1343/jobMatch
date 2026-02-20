@@ -1,13 +1,13 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-5">
-    <div class="bg-slate-800 rounded-xl p-10 max-w-3xl w-full shadow-2xl">
+  <div class="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center px-6 py-8">
+    <div class="bg-slate-800 rounded-2xl px-8 py-10 md:px-12 md:py-12 max-w-6xl w-full shadow-2xl">
       
       <!-- Header -->
       <div class="flex justify-between items-center mb-2">
-        <h1 class="text-white text-2xl font-semibold">Match Results Filter</h1>
-        <span class="bg-blue-600 text-white px-4 py-1.5 rounded-full text-sm">Step 3 of 3</span>
+        <h1 class="text-white text-3xl md:text-4xl font-semibold">Match Results Filter</h1>
+        <span class="bg-blue-600 text-white px-4 py-2 rounded-full text-base font-semibold">Step 3 of 3</span>
       </div>
-      <p class="text-slate-400 text-sm mb-8">Refine candidate matches based on your preferences</p>
+      <p class="text-slate-400 text-base md:text-lg mb-10">Refine candidate matches based on your preferences</p>
 
       <!-- Skill Strictness -->
       <div class="mb-6">
@@ -36,13 +36,13 @@
 
       <!-- Experience Level Filter -->
       <div class="mb-6">
-        <label class="block text-slate-200 text-sm font-medium mb-2.5">Experience Level Filter</label>
-        <div class="flex gap-3">
+        <label class="block text-slate-200 text-base font-medium mb-3">Experience Level Filter</label>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
           <button 
             v-for="level in ['Junior', 'Mid', 'Senior', 'Lead', 'All']" 
             :key="level"
             :class="[
-              'flex-1 px-6 py-2.5 rounded-lg text-sm font-medium transition-all',
+              'px-6 py-3 rounded-xl text-base font-medium transition-all',
               formData.experienceLevel === level 
                 ? 'bg-blue-600 text-white' 
                 : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
@@ -57,7 +57,7 @@
 
       <!-- Salary Expectation Filter -->
       <div class="mb-6">
-        <label class="block text-slate-200 text-sm font-medium mb-3">Salary Expectation Filter</label>
+        <label class="block text-slate-200 text-base font-medium mb-3">Salary Expectation Filter</label>
         <div class="space-y-4">
           <div>
             <div class="flex justify-between mb-2">
@@ -98,11 +98,11 @@
 
       <!-- Availability -->
       <div class="mb-6">
-        <label class="block text-slate-200 text-sm font-medium mb-2.5">Availability</label>
+        <label class="block text-slate-200 text-base font-medium mb-3">Availability</label>
         <div class="relative">
           <select 
             v-model="formData.availability" 
-            class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500 cursor-pointer appearance-none"
+            class="w-full bg-slate-900 border border-slate-600 rounded-xl px-5 py-3.5 text-white text-base focus:outline-none focus:border-blue-500 cursor-pointer appearance-none"
           >
             <option value="any">Any availability</option>
             <option value="immediately">Immediately</option>
@@ -119,13 +119,13 @@
 
       <!-- Location Flexibility -->
       <div class="mb-8">
-        <label class="block text-slate-200 text-sm font-medium mb-2.5">Location Flexibility</label>
-        <div class="flex gap-3">
+        <label class="block text-slate-200 text-base font-medium mb-3">Location Flexibility</label>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
           <button 
             v-for="option in ['Remote Only', 'Hybrid', 'On-site', 'Any Location']" 
             :key="option"
             :class="[
-              'flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all',
+              'px-4 py-3 rounded-xl text-base font-medium transition-all',
               formData.locationFlexibility === option 
                 ? 'bg-blue-600 text-white' 
                 : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
@@ -140,7 +140,7 @@
 
       <!-- Filter Summary -->
       <div class="mb-8 p-4 bg-slate-900 rounded-lg border border-slate-700">
-        <h3 class="text-slate-300 text-sm font-semibold mb-3">Active Filters</h3>
+        <h3 class="text-slate-300 text-base font-semibold mb-3">Active Filters</h3>
         <div class="space-y-2">
           <div class="flex items-center justify-between text-xs">
             <span class="text-slate-400">Skill Strictness:</span>
@@ -171,14 +171,14 @@
       <div class="flex gap-3">
         <button 
           @click="clearFilters"
-          class="px-6 py-3 bg-transparent border border-slate-600 text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-700 transition-all"
+          class="px-6 py-4 bg-transparent border border-slate-600 text-slate-300 rounded-xl text-base font-semibold hover:bg-slate-700 transition-all"
           type="button"
         >
           Clear Filters
         </button>
         <button 
           @click="applyFilters"
-          class="flex-1 bg-blue-600 text-white rounded-lg px-6 py-3 text-sm font-medium hover:bg-blue-700 transition-all"
+          class="flex-1 bg-blue-600 text-white rounded-xl px-6 py-4 text-base font-semibold hover:bg-blue-700 transition-all"
           type="button"
         >
           Apply Filters

@@ -1,37 +1,37 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-5">
-      <div class="bg-slate-800 rounded-xl p-10 max-w-4xl w-full shadow-2xl">
+    <div class="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center px-6 py-8">
+      <div class="bg-slate-800 rounded-2xl px-8 py-10 md:px-12 md:py-12 max-w-6xl w-full shadow-2xl">
         
         <!-- Header -->
         <div class="flex justify-between items-center mb-2">
-          <h1 class="text-white text-2xl font-semibold">Create Job Offer</h1>
-          <span class="bg-blue-600 text-white px-4 py-1.5 rounded-full text-sm">Step 2 of 3</span>
+          <h1 class="text-white text-3xl md:text-4xl font-semibold">Create Job Offer</h1>
+          <span class="bg-blue-600 text-white px-4 py-2 rounded-full text-base font-semibold">Step 2 of 3</span>
         </div>
-        <p class="text-slate-400 text-sm mb-8">Define the role requirements and expectations</p>
+        <p class="text-slate-400 text-base md:text-lg mb-10">Define the role requirements and expectations</p>
   
         <!-- ROLE BASICS SECTION -->
         <div class="mb-8">
-          <h2 class="text-slate-200 text-lg font-semibold mb-4">Role Basics</h2>
+          <h2 class="text-slate-200 text-2xl font-semibold mb-5">Role Basics</h2>
           
           <!-- Job Title -->
           <div class="mb-6">
-            <label class="block text-slate-200 text-sm font-medium mb-2.5">Job Title</label>
+            <label class="block text-slate-200 text-base font-medium mb-2.5">Job Title</label>
             <input 
               v-model="formData.jobTitle" 
               type="text" 
               placeholder="e.g., Senior Frontend Developer"
-              class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500 placeholder-slate-500"
+              class="w-full bg-slate-900 border border-slate-600 rounded-xl px-5 py-3.5 text-white text-base focus:outline-none focus:border-blue-500 placeholder-slate-500"
             />
           </div>
   
           <!-- Department & Location -->
-          <div class="grid grid-cols-2 gap-6 mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label class="block text-slate-200 text-sm font-medium mb-2.5">Department</label>
+              <label class="block text-slate-200 text-base font-medium mb-2.5">Department</label>
               <div class="relative">
                 <select 
                   v-model="formData.department" 
-                  class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500 cursor-pointer appearance-none"
+                  class="w-full bg-slate-900 border border-slate-600 rounded-xl px-5 py-3.5 text-white text-base focus:outline-none focus:border-blue-500 cursor-pointer appearance-none"
                 >
                   <option value="">Select department...</option>
                   <option value="engineering">Engineering</option>
@@ -47,25 +47,25 @@
             </div>
   
             <div>
-              <label class="block text-slate-200 text-sm font-medium mb-2.5">Location</label>
+              <label class="block text-slate-200 text-base font-medium mb-2.5">Location</label>
               <input 
                 v-model="formData.location" 
                 type="text" 
                 placeholder="City, Country or Remote"
-                class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500 placeholder-slate-500"
+                class="w-full bg-slate-900 border border-slate-600 rounded-xl px-5 py-3.5 text-white text-base focus:outline-none focus:border-blue-500 placeholder-slate-500"
               />
             </div>
           </div>
   
           <!-- Work Model -->
           <div class="mb-6">
-            <label class="block text-slate-200 text-sm font-medium mb-2.5">Work Model</label>
-            <div class="flex gap-3">
+            <label class="block text-slate-200 text-base font-medium mb-3">Work Model</label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <button 
                 v-for="model in ['Remote', 'Hybrid', 'On-site']" 
                 :key="model"
                 :class="[
-                  'flex-1 px-6 py-2.5 rounded-lg text-sm font-medium transition-all',
+                  'px-6 py-3 rounded-xl text-base font-medium transition-all',
                   formData.workModel === model 
                     ? 'bg-blue-600 text-white' 
                     : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
@@ -80,13 +80,13 @@
   
           <!-- Employment Type -->
           <div class="mb-6">
-            <label class="block text-slate-200 text-sm font-medium mb-2.5">Employment Type</label>
+            <label class="block text-slate-200 text-base font-medium mb-3">Employment Type</label>
             <div class="flex flex-wrap gap-2.5">
               <button 
                 v-for="type in ['Full-time', 'Part-time', 'Contract', 'Internship']" 
                 :key="type"
                 :class="[
-                  'px-5 py-2.5 rounded-lg text-sm font-medium transition-all',
+                  'px-5 py-3 rounded-xl text-base font-medium transition-all',
                   formData.employmentTypes.includes(type)
                     ? 'bg-blue-600 text-white' 
                     : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
@@ -103,17 +103,17 @@
   
         <!-- EXPERIENCE & COMPENSATION SECTION -->
         <div class="mb-8">
-          <h2 class="text-slate-200 text-lg font-semibold mb-4">Experience & Compensation</h2>
+          <h2 class="text-slate-200 text-2xl font-semibold mb-5">Experience & Compensation</h2>
           
           <!-- Experience Level -->
           <div class="mb-6">
-            <label class="block text-slate-200 text-sm font-medium mb-2.5">Experience Level</label>
-            <div class="flex gap-3">
+            <label class="block text-slate-200 text-base font-medium mb-3">Experience Level</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <button 
                 v-for="level in ['Junior', 'Mid', 'Senior', 'Lead']" 
                 :key="level"
                 :class="[
-                  'flex-1 px-6 py-2.5 rounded-lg text-sm font-medium transition-all',
+                  'px-6 py-3 rounded-xl text-base font-medium transition-all',
                   formData.experienceLevel === level 
                     ? 'bg-blue-600 text-white' 
                     : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
@@ -128,54 +128,37 @@
   
           <!-- Salary Range -->
           <div class="mb-6">
-            <label class="block text-slate-200 text-sm font-medium mb-3">Salary Range</label>
-            <div class="space-y-4">
-              <div>
-                <div class="flex justify-between mb-2">
-                  <span class="text-slate-400 text-xs">Minimum</span>
-                  <span class="text-blue-500 text-sm font-semibold">{{ formData.salaryMin }} TND</span>
-                </div>
-                <input 
-                  v-model.number="formData.salaryMin" 
-                  type="range" 
-                  min="2000" 
-                  max="10000" 
-                  step="500"
-                  class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                />
-              </div>
-              <div>
-                <div class="flex justify-between mb-2">
-                  <span class="text-slate-400 text-xs">Maximum</span>
-                  <span class="text-blue-500 text-sm font-semibold">{{ formData.salaryMax }} TND</span>
-                </div>
-                <input 
-                  v-model.number="formData.salaryMax" 
-                  type="range" 
-                  min="2000" 
-                  max="10000" 
-                  step="500"
-                  class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                />
-              </div>
+            <label class="block text-slate-200 text-base font-medium mb-3">Salary Range</label>
+            <input 
+              v-model.number="formData.salary" 
+              type="range" 
+              min="500" 
+              max="6000" 
+              step="100"
+              class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+            />
+            <div class="flex justify-between items-center mt-3 text-base">
+              <span class="text-slate-400">500 TND</span>
+              <span class="text-blue-500 font-semibold">{{ formData.salary }} TND</span>
+              <span class="text-slate-400">6000 TND</span>
             </div>
           </div>
         </div>
   
         <!-- REQUIRED SKILLS SECTION -->
         <div class="mb-8">
-          <h2 class="text-slate-200 text-lg font-semibold mb-4">Required Skills</h2>
+          <h2 class="text-slate-200 text-2xl font-semibold mb-5">Required Skills</h2>
           
           <!-- Must-Have Skills -->
           <div class="mb-6">
-            <label class="block text-slate-200 text-sm font-medium mb-2.5">Must-Have Skills</label>
+            <label class="block text-slate-200 text-base font-medium mb-3">Must-Have Skills</label>
             <div class="flex flex-wrap gap-2 mb-3">
               <div 
                 v-for="(skill, index) in formData.mustHaveSkills" 
                 :key="index"
                 class="bg-slate-700 rounded-lg px-3 py-2 flex items-center gap-2"
               >
-                <span class="text-white text-sm">{{ skill.name }}</span>
+                <span class="text-white text-base">{{ skill.name }}</span>
                 <span class="text-slate-400 text-xs">{{ skill.years }}y</span>
                 <span class="text-slate-500 text-xs">W:{{ skill.weight }}</span>
                 <button 
@@ -194,7 +177,7 @@
                 v-model="newMustHaveSkill.name" 
                 type="text" 
                 placeholder="Skill name"
-                class="flex-1 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-blue-500 placeholder-slate-500"
+                class="flex-1 bg-slate-900 border border-slate-600 rounded-xl px-5 py-3 text-white text-base focus:outline-none focus:border-blue-500 placeholder-slate-500"
               />
               <input 
                 v-model.number="newMustHaveSkill.years" 
@@ -202,11 +185,11 @@
                 min="0" 
                 max="20"
                 placeholder="Years"
-                class="w-20 bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500 placeholder-slate-500"
+                class="w-24 bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-blue-500 placeholder-slate-500"
               />
               <select 
                 v-model.number="newMustHaveSkill.weight"
-                class="w-24 bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500 appearance-none"
+                class="w-28 bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 text-white text-base focus:outline-none focus:border-blue-500 appearance-none"
               >
                 <option value="1">W: 1</option>
                 <option value="2">W: 2</option>
@@ -216,7 +199,7 @@
               </select>
               <button 
                 @click="addMustHaveSkill"
-                class="bg-blue-600 text-white px-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition-all"
+                class="bg-blue-600 text-white px-6 rounded-xl text-base font-semibold hover:bg-blue-700 transition-all"
                 type="button"
               >
                 Add
@@ -227,18 +210,18 @@
   
         <!-- OPTIONAL SKILLS SECTION -->
         <div class="mb-8">
-          <h2 class="text-slate-200 text-lg font-semibold mb-4">Optional Skills</h2>
+          <h2 class="text-slate-200 text-2xl font-semibold mb-5">Optional Skills</h2>
           
           <!-- Nice-to-Have Skills -->
           <div class="mb-6">
-            <label class="block text-slate-200 text-sm font-medium mb-2.5">Nice-to-Have Skills</label>
+            <label class="block text-slate-200 text-base font-medium mb-3">Nice-to-Have Skills</label>
             <div class="flex flex-wrap gap-2 mb-3">
               <div 
                 v-for="(skill, index) in formData.niceToHaveSkills" 
                 :key="index"
                 class="bg-slate-700 rounded-lg px-3 py-2 flex items-center gap-2"
               >
-                <span class="text-white text-sm">{{ skill }}</span>
+                <span class="text-white text-base">{{ skill }}</span>
                 <button 
                   @click="removeNiceToHaveSkill(index)"
                   class="text-slate-400 hover:text-red-400"
@@ -256,11 +239,11 @@
                 type="text" 
                 placeholder="Add optional skill and press Enter"
                 @keyup.enter="addNiceToHaveSkill"
-                class="flex-1 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-blue-500 placeholder-slate-500"
+                class="flex-1 bg-slate-900 border border-slate-600 rounded-xl px-5 py-3 text-white text-base focus:outline-none focus:border-blue-500 placeholder-slate-500"
               />
               <button 
                 @click="addNiceToHaveSkill"
-                class="bg-slate-700 text-white px-4 rounded-lg text-sm font-medium hover:bg-slate-600 transition-all"
+                class="bg-slate-700 text-white px-6 rounded-xl text-base font-semibold hover:bg-slate-600 transition-all"
                 type="button"
               >
                 Add
@@ -271,17 +254,17 @@
   
         <!-- CULTURE FIT SECTION -->
         <div class="mb-8">
-          <h2 class="text-slate-200 text-lg font-semibold mb-4">Culture Fit</h2>
+          <h2 class="text-slate-200 text-2xl font-semibold mb-5">Culture Fit</h2>
           
           <!-- Preferred Soft Skills -->
           <div class="mb-6">
-            <label class="block text-slate-200 text-sm font-medium mb-2.5">Preferred Soft Skills</label>
+            <label class="block text-slate-200 text-base font-medium mb-3">Preferred Soft Skills</label>
             <div class="flex flex-wrap gap-2.5">
               <button 
                 v-for="skill in ['Team Player', 'Leadership', 'Communication', 'Problem Solving', 'Adaptability', 'Creativity', 'Time Management']" 
                 :key="skill"
                 :class="[
-                  'px-4 py-2.5 rounded-lg text-sm font-medium transition-all',
+                  'px-5 py-3 rounded-xl text-base font-medium transition-all',
                   formData.softSkills.includes(skill)
                     ? 'bg-blue-600 text-white' 
                     : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
@@ -301,7 +284,7 @@
           <button 
             @click="submit"
             :disabled="isLoading"
-            class="flex-1 bg-blue-600 text-white rounded-lg px-6 py-3 text-sm font-medium hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed transition-all"
+            class="flex-1 bg-blue-600 text-white rounded-xl px-8 py-4 text-base md:text-lg font-semibold hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed transition-all"
             type="button"
           >
             {{ isLoading ? 'Submitting...' : 'Continue' }}
@@ -322,8 +305,7 @@
     workModel: 'Hybrid',
     employmentTypes: ['Full-time'],
     experienceLevel: 'Mid',
-    salaryMin: 3000,
-    salaryMax: 6000,
+    salary: 4000,
     mustHaveSkills: [],
     niceToHaveSkills: [],
     softSkills: []

@@ -26,9 +26,6 @@
         </button>
       </div>
 
-      <p class="text-slate-400 text-sm pt-2">
-        To personalize your experience and keep your data secure, you'll need an account.
-      </p>
     </div>
   </section>
 </template>

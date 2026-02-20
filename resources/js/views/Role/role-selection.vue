@@ -71,24 +71,31 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import axiosInstance from '../../api/axios';
 
 const router = useRouter();
 
-const onClick = (type) => {
-  if (type === 'candidate') {
-    router.push('/candidate/profile-setup');
-  } else if (type === 'recruiter') {
-    router.push('/recruiter/profile-setup');
+const onClick = async (type) => {
+  try {
+    const token = localStorage.getItem('token');
+
+    await axiosInstance.post(
+      '/api/user/select-role',
+      { role: type },
+    );
+
+    console.log('✅ Role saved:', type);
+
+    if (type === 'candidate') {
+      router.push('/candidate/profile-setup');
+    } else {
+      router.push('/recruiter/profile-setup');
+    }
+
+  } catch (error) {
+    console.error('❌ Error saving role:', error.response?.data || error);
+    alert('Failed to save role. Please try again.');
   }
 };
 </script>
 
-<style scoped>
-/* Translucent hover effect */
-.bg-white\/50 {
-  background-color: rgba(255, 255, 255, 0.5);
-}
-.bg-white\/80 {
-  background-color: rgba(255, 255, 255, 0.8);
-}
-</style>

@@ -9,9 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules\Password as PasswordRule;
-/* 
-POST /api/auth/logout → AuthController@logout (needs auth middleware)
-*/
+
+
 class AuthController extends Controller
 {
     public function logout(Request $request)
@@ -28,9 +27,12 @@ class AuthController extends Controller
     {
         // Validation
         $validatedForm = $request->validate([
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8',
-            'username' => 'nullable|string'
+            'username' => 'nullable|string',
+            'active_role' => 'nullable|in:candidate,recruiter',
+            'profile_completed' => 'nullable|boolean',
+
         ]);
 
         // Find user by email
@@ -127,25 +129,16 @@ class AuthController extends Controller
                     ->numbers()        
                     ->symbols(),       
             ],
-        ]);
+            'active_role' => 'nullable|in:candidate,recruiter',
+            'profile_completed' => 'nullable|boolean',      ]);
 
-        // Server-side ZeroBounce Validation
-        $emailCheck = $this->validateEmailWithZeroBounce($request->email);
-
-        // Check if email is valid. 
-        if ($emailCheck['status'] !== 'valid') {
-            return response()->json([
-                'message' => 'Invalid or non-deliverable email address.',
-                'errors' => [
-                    'email' => ['The email address is not valid (Status: ' . ($emailCheck['status'] ?? 'unknown') . ').']
-                ]
-            ], 422);
-        }
 
         $user = User::create([
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'active_role' =>null,
+            'profile_completed'=>false, 
         ]);
 
         // Generate authentication token
@@ -173,44 +166,6 @@ class AuthController extends Controller
         ]);
     }
 
-    public function handleEmail(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-        ]);
-
-        $data = $this->validateEmailWithZeroBounce($request->email);
-
-        $isValid = isset($data['status']) && $data['status'] === 'valid';
-        $message = $isValid ? 'Email is valid' : 'Email is invalid or risky';
-        
-        if (!$isValid && isset($data['status'])) {
-             $message = "Email status: " . $data['status'];
-        }
-
-        return response()->json([
-            'valid' => $isValid,
-            'message' => $message,
-            'data' => $data 
-        ]);
-    }
-
-    private function validateEmailWithZeroBounce($email)
-    {
-        $apiKey = config('services.zerobounce.key');
-        // ZeroBounce API endpoint
-        $url = "https://api.zerobounce.net/v2/validate?api_key={$apiKey}&email={$email}&ip_address=";
-
-        try {
-            $response = Http::get($url);
-            return $response->json();
-        } catch (\Exception $e) {
-            // Fallback or error handling
-            \Log::error("ZeroBounce Error: " . $e->getMessage());
-            return ['status' => 'unknown', 'error' => $e->getMessage()];
-        }
-    }
-    
     public function userIdentityVerification(Request $request)
     {
         $request->validate([
@@ -223,10 +178,6 @@ class AuthController extends Controller
         ]);
     }
     
-/* 
-Sender → controlled by .env
-Receiver → controlled in controller with Mail::to()
-*/
     public function sendEmail(Request $request)
     {
         $receiver = $request->email;

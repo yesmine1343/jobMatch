@@ -21,6 +21,8 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'active_role',
+        //'profile_completed',
     ];
 
     /**
@@ -52,5 +54,14 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new \App\Notifications\ResetPasswordNotification($token));
+    }
+    public function candidateProfile()
+    {
+        return $this->hasOne(CandidateProfile::class);
+    }
+
+    public function recruiterProfile()
+    {
+        return $this->hasOne(RecruiterProfile::class);
     }
 }

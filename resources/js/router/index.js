@@ -12,6 +12,7 @@ import DashboardPreview from '../views/Role/DashboardPreview.vue';
 import CandidateDashboard from '../views/candidate/dashboard.vue';
 import RecruiterDashboard from '../views/recruiter/dashboard.vue';
 import CreateJob from '../views/recruiter/create-job.vue';
+import MatchScore from '../views/recruiter/match-score.vue';
 
 
 const routes = [
@@ -78,12 +79,12 @@ const routes = [
     {
         path: '/recruiter/create-job',
         name: 'CreateJob',
-        component: 'CreateJob',
+        component: CreateJob,
     },
     {
         path: '/recruiter/match-score',
         name: 'MatchScore',
-        component: 'MatchScore',
+        component: MatchScore,
     }
 ];
 
