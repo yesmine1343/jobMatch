@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center px-6 py-8">
+  <div class="min-h-screen flex items-center justify-center px-6 py-8">
     <div class="bg-slate-800 rounded-2xl px-8 py-10 md:px-12 md:py-12 max-w-6xl w-full shadow-2xl">
       
       <!-- Header -->
@@ -114,42 +114,40 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import {  useRouter } from 'vue-router';
 import axiosInstance from '../../api/axios';
 
 const router = useRouter();
 const isLoading = ref(false);
 
-const formData = reactive({
+const  formData = reactive({
   companyName: '',
   industry: '',
-  companySize: '11-50',
+  companySize: '',
   hiringLocation: '',
-  workModel: 'Hybrid'
+  workModel: ''
 });
-
 const submit = async () => {
   if (isLoading.value) return;
-
+  
   isLoading.value = true;
 
   try {
-    const token = localStorage.getItem('token');
+    console.log('📤 Sendiing data:', formData);
 
-    await axiosInstance.post(
-      '/api/recruiter/profile-setup',
-      {
-        companyName: formData.companyName,
-        industry: formData.industry,
-        companySize: formData.companySize,
-        hiringLocation: formData.hiringLocation,
-        workModel: formData.workModel,
-      },
-    );
+    const response = await axiosInstance.post('/api/recruiter/profile-setup',{...formData});
+      console.log('✅ Response:', response.data);
 
-    router.push({ name: 'recruiterDashboard' });
+    router.push({ name: 'Rdashboard' });
+
   } catch (error) {
-    console.error('Error saving profile:', error);
+    console.error('❌ Error details:', error.response?.data || error);
+    
+    if (error.response?.data?.errors) {
+      alert('Validation errors: ' + JSON.stringify(error.response.data.errors));
+    } else {
+      alert('Failed to save profile: ' + (error.response?.data?.message || error.message));
+    }
   } finally {
     isLoading.value = false;
   }

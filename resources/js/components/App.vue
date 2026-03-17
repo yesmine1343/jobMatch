@@ -9,16 +9,18 @@
         </router-link>
         
         <nav class="nav-links">
-          <!-- NOT logged in: Show Login & Register -->
+          <!-- NOT logged in: Show Login & Register --> 
           <template v-if="!isAuthenticated">
             <router-link to="/login" class="nav-link">Login</router-link>
             <router-link to="/register" class="nav-link">Register</router-link>
+            <router-link to="/home" class="nav-link">Home</router-link>
           </template>
 
           <!-- Logged in: Show Go Back & Logout -->
           <template v-else>
             <a href="#" class="nav-link" @click.prevent="goBack">← Go Back</a>
             <a href="#" class="nav-link" @click.prevent="handleLogout">Logout</a>
+            <a href="#" class="nav-link" @click.prevent="handleHome">Home</a>
           </template>
         </nav>
       </div>
@@ -77,16 +79,25 @@ const handleLogout = async () => {
     router.push({ name: 'login' });
   }
 };
+const handleHome = () => {
+  router.push({ name: 'home' });
+};
 </script>
 
 <style scoped>
-
+/*
 .app-container {
   min-height: 100vh;
   background-image: url('/images/bgimg.png');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+  position: relative;
+}
+*/
+.app-container {
+  min-height: 100vh;
+  background-color: #ffffff;
   position: relative;
 }
 

@@ -27,7 +27,7 @@ class AuthController extends Controller
     {
         // Validation
         $validatedForm = $request->validate([
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email',
             'password' => 'required|min:8',
             'username' => 'nullable|string',
             'active_role' => 'nullable|in:candidate,recruiter',
@@ -119,7 +119,7 @@ class AuthController extends Controller
     {
         $validatedData = $request->validate([
             'username' => 'required|string|max:255|unique:users',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255',
             'password' => [
                 'required',
                 'confirmed',

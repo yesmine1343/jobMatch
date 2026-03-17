@@ -6,14 +6,15 @@ import ForgotPassword from '../views/auth/ForgotPassword.vue';
 import UserIdentityVerification from '../views/auth/userIdentityVerification.vue';
 import ResetPassword from '../views/auth/ResetPassword.vue';
 import RoleSelection from '../views/Role/role-selection.vue';
-import CandidateProfileSetup from '../views/candidate/profile-setup.vue';
-import RecruiterProfileSetup from '../views/recruiter/profile-setup.vue';
 import DashboardPreview from '../views/Role/DashboardPreview.vue';
 import CandidateDashboard from '../views/candidate/dashboard.vue';
+import CandidateProfileSetup from '../views/candidate/profile-setup.vue';
+import RecruiterProfileSetup from '../views/recruiter/profile-setup.vue';
 import RecruiterDashboard from '../views/recruiter/dashboard.vue';
-import CreateJob from '../views/recruiter/create-job.vue';
-import MatchScore from '../views/recruiter/match-score.vue';
-
+import JobOffer from '../views/recruiter/create-job.vue';
+import JobList from '../views/recruiter/job-list.vue';
+//import MatchScore from '../views/recruiter/match-score.vue';
+import Applications from '../views/recruiter/applications.vue';
 
 const routes = [
     {
@@ -52,6 +53,11 @@ const routes = [
         component: RoleSelection,
     },
     {
+        path: '/candidate/dashboard',
+        name: 'Cdashboard',
+        component: CandidateDashboard,
+    },
+    {
         path: '/candidate/profile-setup',
         name: 'candidateProfileSetup',
         component: CandidateProfileSetup,
@@ -61,16 +67,7 @@ const routes = [
         name: 'recruiterProfileSetup',
         component: RecruiterProfileSetup,
     },
-    {
-        path: '/Role/DashboardPreview',
-        name: 'DashboardPreview',
-        component: DashboardPreview,
-    },
-    {
-        path: '/candidate/dashboard',
-        name: 'Cdashboard',
-        component: CandidateDashboard,
-    },
+
     {
         path: '/recruiter/dashboard',
         name: 'Rdashboard',
@@ -78,14 +75,20 @@ const routes = [
     },
     {
         path: '/recruiter/create-job',
-        name: 'CreateJob',
-        component: CreateJob,
+        name: 'JobOffer',
+        component: JobOffer,
     },
     {
-        path: '/recruiter/match-score',
-        name: 'MatchScore',
-        component: MatchScore,
-    }
+        path: '/recruiter/job-list',
+        name: 'JobList',
+        component: JobList,
+    },
+    {
+        path: '/recruiter/applications',
+        name: 'applications',
+        component: Applications,
+    },
+    { path: '/recruiter/job-edit/:id', name: 'JobEdit', component: () => import('../components/job-edit.vue') },
 ];
 
 const router = createRouter({

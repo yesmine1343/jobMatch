@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex items-center justify-start pl-24">
+  <div class="min-h-screen flex items-center justify-center">
     <form @submit.prevent="handleSubmit" novalidate ref="formElement" autocomplete="off" class="bg-indigo-300 w-1/3 rounded-xl shadow-2xl border-2 border-slate-200 max-w-md p-8 space-y-5">
       <div class="space-y-2">
         <label for="username" class="block text-sm font-semibold text-slate-700">Username:</label>
@@ -208,9 +208,13 @@ const handleSubmit = async () => {
     // Send a POST request to your Laravel API endpoint
     const response = await axiosInstance.post('/api/auth/register', form.value);
     
-    // Store the authentication token (if returned)
+    // Store the authentication token AND user object (if returned)
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
+    }
+    
+    if (response.data.user) {
+      localStorage.setItem('user', JSON.stringify(response.data.user));
     }
     
     // Show success message from backend

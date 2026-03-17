@@ -14,8 +14,8 @@ class RecruiterProfile extends Model
         'company_name',
         'industry',
         'company_size',
-        'default_hiring_location',
-        'default_work_model',
+        'hiring_location',
+        'work_model',
     ];
 
     public function user()

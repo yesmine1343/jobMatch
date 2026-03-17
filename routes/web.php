@@ -28,4 +28,3 @@ Prevents 404 when user refreshes or pastes a URL
 Hands control back to Vue Router
 */
 
-Route::apiResource('jobs', JobController::class);

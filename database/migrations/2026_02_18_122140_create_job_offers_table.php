@@ -23,7 +23,7 @@ return new class extends Migration
             $table->enum('employment_type', ['Full-time', 'Part-time', 'Contract', 'Internship']);
             $table->integer('salary_min')->nullable();
             $table->integer('salary_max')->nullable();
-            $table->enum('status', ['active', 'closed', 'draft'])->default('active');
+            $table->enum('status', ['active', 'closed'])->default('active');
             
             $table->timestamps();
         });

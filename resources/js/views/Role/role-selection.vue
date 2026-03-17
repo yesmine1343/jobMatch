@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex items-center justify-start pl-24">
+  <div class="min-h-screen flex items-center justify-center">
     <div class="space-y-8 max-w-4xl">
       <div class="space-y-2">
         <h2 class="text-3xl font-bold text-white">
@@ -9,10 +9,10 @@
       </div>
 
       <div class="flex gap-8">
-        <!-- Candidate Card -->
+        <!-- Candidate Card has an important COMMENTTTTTTT  -->
         <div
           class="group relative flex flex-col items-center justify-center w-72 h-80 bg-indigo-300 rounded-xl shadow-2xl border-2 border-slate-200 cursor-pointer hover:scale-105 transition-all duration-300 p-8"
-          @click="onClick('candidate')"
+          @click="onClick('candidate')" :disabled="isLoading"
         >
           <div class="w-32 h-32 mb-6 bg-white/50 rounded-full flex items-center justify-center p-4 shadow-inner group-hover:bg-white/80 transition-colors">
             <!-- Icon placeholder - Job search icon -->
@@ -20,6 +20,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
+          
           <h3 class="text-slate-900 text-xl font-bold mb-2 uppercase tracking-wide">Candidate</h3>
           <p class="text-slate-700 text-sm text-center font-semibold">I am looking for a job and want to showcase my skills.</p>
           
@@ -72,10 +73,15 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import axiosInstance from '../../api/axios';
+import { ref } from 'vue';
 
 const router = useRouter();
+const isLoading = ref(false);
 
 const onClick = async (type) => {
+  if (isLoading.value)
+  return;
+  isLoading.value = true;
   try {
     const token = localStorage.getItem('token');
 
@@ -95,6 +101,8 @@ const onClick = async (type) => {
   } catch (error) {
     console.error('❌ Error saving role:', error.response?.data || error);
     alert('Failed to save role. Please try again.');
+  } finally {
+    isLoading.value = false;
   }
 };
 </script>

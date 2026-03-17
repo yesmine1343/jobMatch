@@ -12,7 +12,7 @@ class RoleSelectionController extends Controller
 
    public function selectRole(Request $request)
    {
-
+        
         $request->validate([
             'role' => 'required|in:candidate,recruiter',
         ]);

@@ -63,4 +63,14 @@ class UserController extends Controller
     {
         //
     }
+
+    /**
+     * Get the authenticated user's username
+     */
+    public function getUsername(Request $request)
+    {
+        return response()->json([
+            'username' => $request->user()->name
+        ]);
+    }
 }

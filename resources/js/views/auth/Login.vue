@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex items-center justify-start pl-24">
+  <div class="min-h-screen flex items-center justify-center">
     <form @submit.prevent="handleSubmit" novalidate ref="formEl" class="bg-indigo-300 w-1/3 rounded-xl shadow-2xl border-2 border-slate-200 max-w-md p-8 space-y-5">
       <div class="space-y-2">
         <label for="username" class="block text-sm font-semibold text-slate-700">Username:</label>
@@ -86,7 +86,9 @@ const handleSubmit = async () => {
     
     // Store the authentication token
     if (response.data.token) {
+      console.log('FULL RESPONSE:', response.data);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
     }
     
     // Redirect to home

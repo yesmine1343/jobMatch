@@ -106,6 +106,18 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const handleSetup = () => {
+  const user = JSON.parse(localStorage.getItem('user'))
+
+  if (!user || !user.active_role) {
     router.push({ name: 'RoleSelection' })
+    return
+  }
+
+  if (user.active_role === 'candidate') {
+    router.push({ name: 'Cdashboard' })
+  } 
+  else if (user.active_role === 'recruiter') {
+    router.push({ name: 'Rdashboard' })
+  }
 }
 </script>

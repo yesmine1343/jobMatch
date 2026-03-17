@@ -15,9 +15,9 @@ class CandidateProfile extends Model
         'experience_level',
         'work_type',
         'employment_type',
-        'expected_salary',
-        'availability',
         'location_preference',
+        'skills',
+        'education_level',
     ];
 
     public function user()
