@@ -38,7 +38,8 @@ Route::middleware('auth:sanctum')->prefix('candidate')->group(function () {
     Route::get('/matches', [CandidateProfileController::class, 'getMatches']);
     Route::post('/matches', [CandidateProfileController::class, 'getMatches']);
     Route::get('jobs/index', [JobOfferController::class, 'index']);
-    Route::get('/jobs/{id}', [CandidateProfileController::class, 'show']);
+    Route::get('/jobs/{id}', [JobOfferController::class, 'show']);
+    Route::delete('/delete', [CandidateProfileController::class, 'delete']);
 
 
 });

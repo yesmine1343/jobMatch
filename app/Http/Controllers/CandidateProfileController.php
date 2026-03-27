@@ -37,65 +37,55 @@ class CandidateProfileController extends Controller
     public function getMatches(Request $request)
     {
         $validated = $request->validate([
-            'skills' => 'required|array',
+            'skills' => 'nullable|array',  // ← CHANGE: Make skills optional
             'skills.*' => 'string',
             'education_level' => 'nullable|in:High School,Bachelor,Master,PhD',
         ]);
 
         $profile = auth()->user()->candidateProfile;
 
+        // ADD THIS CHECK
+        if (!$profile) {
+            return response()->json([
+                'message' => 'Complete your candidate profile before viewing matches.'
+            ], 422);
+        }
+
         $matchingService = new MatchingService();
 
         $candidateData = [
-            'skills' => $validated['skills'],
+            'skills' => $validated['skills'] ?? [],
             'experience_level' => $profile->experience_level,
             'education_level' => $validated['education_level'] ?? null,
         ];
-
-        $query = JobOffer::where('status', 'active')
-            ->where('work_model', $profile->work_type)
-            ->where('employment_type', $profile->employment_type);
-
-        $jobs = $query->get();
-
-        $matches = [];
-
-        foreach ($jobs as $job) {
-            $jobData = [
-                'required_skills' => $job->required_skills ?? [],
-                'required_experience_level' => $job->required_experience_level ?? 'Mid',
-                'required_education' => $job->required_education ?? null,
-            ];
-
-            $score = $matchingService->calculate($candidateData, $jobData);
-
-            $matches[] = [
-                'id' => $job->id,
-                'title' => $job->title,
-                'location' => $job->location,
-                'salary_min' => $job->salary_min,
-                'salary_max' => $job->salary_max,
-                'work_model' => $job->work_model,
-                'match_score' => $score['final_score'],
-            ];
-        }
-
-        usort($matches, fn($a, $b) => $b['match_score'] - $a['match_score']);
-
-        return response()->json($matches);
+        
+        // ... rest of code
     }
     public function show(Request $request)
     {
         $user = $request->user();
-        $profile = $user->candidateProfile; // adjust to your relationship name
+        $profile = $user->candidateProfile;
+
+        if (!$profile) {
+            return response()->json(['message' => 'Candidate profile not found.'], 404);
+        }
 
         return response()->json([
-            'username' => $user->name,
+            'username' => $user->username,
             'email' => $user->email,
             'target_job_title' => $profile->target_job_title,
             'experience_level' => $profile->experience_level,
             'location_preference' => $profile->location_preference,
             'employment_type' => $profile->employment_type,
         ]);
+    }
+    public function delete(Request $request)
+    {
+        $user = $request->user();
+
+        $user->tokens()->delete();
+        $user->delete();
+
+        return response()->json(['message' => 'Account deleted successfully']);
     }
 }

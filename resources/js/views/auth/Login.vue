@@ -1,5 +1,18 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center">
+  <div class="min-h-screen flex items-center justify-center relative">
+    <div
+      v-if="errorType"
+      role="status"
+      class="fixed top-4 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-center text-sm text-blue-700 shadow-sm"
+    >
+      <template v-if="errorType === 'account_not_found'">
+        This account does not exist.
+        <a href="#" @click.prevent="$router.push({ name: 'register' })" class="ml-1 font-medium underline">Sign up?</a>
+      </template>
+      <template v-else-if="errorType === 'invalid_credentials'">
+        Invalid credentials.
+      </template>
+    </div>
     <form @submit.prevent="handleSubmit" novalidate ref="formEl" class="bg-indigo-300 w-1/3 rounded-xl shadow-2xl border-2 border-slate-200 max-w-md p-8 space-y-5">
       <div class="space-y-2">
         <label for="username" class="block text-sm font-semibold text-slate-700">Username:</label>
@@ -16,15 +29,6 @@
       <div class="space-y-2">
         <label for="pwd" class="block text-sm font-semibold text-slate-700">Password:</label>
         <input type="password" id="pwd" v-model.lazy="form.password" class="w-full px-4 py-3 rounded-lg border-2 border-slate-300 bg-slate-50 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
-        
-        <!-- Error messages -->
-        <p v-if="errorType === 'invalid_credentials'" class="mt-1 text-xs text-indigo-900">
-          Invalid credentials
-        </p>
-        <p v-if="errorType === 'account_not_found'" class="mt-1 text-xs text-indigo-900">
-          This account does not exist, do you want to 
-          <a href="" @click.prevent="$router.push({ name: 'register' })" class="text-blue-600 hover:underline">sign up?</a>
-        </p>
       </div>
 
       <!-- Remember me -->
@@ -101,6 +105,10 @@ const handleSubmit = async () => {
     if (error.response?.data?.error_type) {
       errorType.value = error.response.data.error_type;
     }
+  // Auto-clear error after 3 seconds
+    setTimeout(() => {
+      errorType.value = '';
+    }, 3000);
   } finally {
     isLoading.value = false;
   }
