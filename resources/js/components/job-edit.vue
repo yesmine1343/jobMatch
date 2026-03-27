@@ -36,12 +36,12 @@
 <script setup>
 import { reactive, ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import axiosInstance from '../../api/axios.js';
-import JobRoleBasics from '../../components/JobRoleBasics.vue';
-import JobExperienceComp from '../../components/JobExperienceComp.vue';
-import JobRequiredSkills from '../../components/JobRequiredSkills.vue';
-import JobOptionalSkills from '../../components/JobOptionalSkills.vue';
-import JobCultureFit from '../../components/JobCultureFit.vue';
+import axiosInstance from '../api/axios.js';
+import JobRoleBasics from './JobRoleBasics.vue';
+import JobExperienceComp from './JobExperienceComp.vue';
+import JobRequiredSkills from './JobRequiredSkills.vue';
+import JobOptionalSkills from './JobOptionalSkills.vue';
+import JobCultureFit from './JobCultureFit.vue';
 
 const route = useRoute();
 const router = useRouter();
